@@ -78,8 +78,17 @@ Molecule *le_molecula_entrada(char *s)
 
 int main(int argc, char **argv)
 {
+     /* Command line parameters:
+	1 - Input file
+	2 - Output file
+	3 - Stats file
+	4 - Size of population
+	5 - Generations
+	6 - Prob crossover
+	7 - Prob mutation
+ */
      /* Verifica numero de parametros da linha de comando */
-     if (argc !=8)
+     if (argc != 8)
      {
 	  puts("Error in the command line parameters!");
 	  exit(1);
