@@ -75,22 +75,24 @@ Molecule *le_molecula_entrada(char *s)
 }
 
 
+void print_help()
+{
+     printf("Command line parameters:\n"
+	"1 - Input file\n"
+	"2 - Output file (not implemented yet)\n"
+	"3 - Stats file\n"
+	"4 - Size of population\n"
+	"5 - Generations\n"
+	"6 - Prob crossover\n"
+	"7 - Prob mutation\n");
+}
 
 int main(int argc, char **argv)
 {
-     /* Command line parameters:
-	1 - Input file
-	2 - Output file
-	3 - Stats file
-	4 - Size of population
-	5 - Generations
-	6 - Prob crossover
-	7 - Prob mutation
- */
      /* Verifica numero de parametros da linha de comando */
      if (argc != 8)
      {
-	  puts("Error in the command line parameters!");
+	  print_help();
 	  exit(1);
      }
 
@@ -151,10 +153,10 @@ int main(int argc, char **argv)
 
      FILE *stats = fopen(argv[3], "w");
      int i;
-     fprintf(stats, "Best, Worst, Average");
-     for (i=0; i< tam_populacao; ++i)
+     fprintf(stats, "Best, Average, Worst\n");
+     for (i=0; i< geracoes; ++i)
      {
-	  fprintf(stats, "%f %f %f\n", melhor_global[i], pior_global[i], media_global[i]);
+	  fprintf(stats, "%f %f %f\n", melhor_global[i], media_global[i], pior_global[i]);
      }
      
      destroy_molecule(molecula_entrada);
