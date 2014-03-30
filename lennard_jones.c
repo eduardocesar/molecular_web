@@ -10,11 +10,15 @@
 #include "atomo_molecula.h"
 #include "simulador.h"
 
-void le_potencial_lennard_jones()
+void process_string_potential(char *string_potential)
+/* TODO: Optimize the function */
 {
 
      int size = 1024;
-     int pos, c, skip;
+     int pos, skip;
+     int total_size, idx = 0;
+     char c;
+
      char *buffer = (char *) malloc(size);
 
      double params[2];
@@ -22,60 +26,53 @@ void le_potencial_lennard_jones()
 
      ENTRY e, *ep;
 
-     /* Name defined in simulador.h */
-     FILE *fin = fopen(ARQUIVO_POTENCIAL_LENNARD_JONES, "r");
-     if (fin)
+     total_size = strlen(string_potential);
+
+     while (1) /* read all lines in file */
      {
-	  while (1) /* read all lines in file */
+	  pos = 0;
+	  skip = 0;
+	  do /* read one line */
 	  {
-	       pos = 0;
-	       skip = 0;
-	       do /* read one line */
-	       {
-		    c = fgetc(fin);
-		    if (c == '#') skip = 1; /* Mark the line to be discarded */
+	       c = string_potential[idx++];
+	       if (c == '#') skip = 1; /* Mark the line to be discarded */
 			 
-		    if (c != EOF) buffer[pos++] = (char) c;
-		    if(pos >= size - 1) { // increase buffer length - leave room for 0
-			 size *= 2;
-			 buffer = (char*) realloc(buffer, size);
-		    }
+	       if (c != EOF) buffer[pos++] = (char) c;
+	       if(pos >= size - 1) { // increase buffer length - leave room for 0
+		    size *= 2;
+		    buffer = (char*) realloc(buffer, size);
+	       }
 		    
-	       } while (c != '\n' && c != EOF);
+	  } while (c != '\n' && idx != total_size);
 
-	       if (c == EOF) break;
 
-	       buffer[pos] = 0;	/* End of line */
-	       //printf("%s", buffer);
 
-	       if (skip) continue; /*  Skip the line */
+	  buffer[pos] = 0;	/* End of line */
+	  //printf("%s", buffer);
 
-	       /* Construct the param hash from the buffer */
-	       sscanf(buffer, "%s %lf %lf", elem, &params[0], &params[1]);
+	  if (skip) continue; /*  Skip the line */
 
-	       e.key = strdup(elem);
-	       double * entry = (double *) calloc(2, sizeof(double));
-	       entry[0] = params[0];
-	       entry[1] = params[1];
-	       e.data = entry;
+	  /* Construct the param hash from the buffer */
+	  sscanf(buffer, "%s %lf %lf", elem, &params[0], &params[1]);
+
+	  e.key = strdup(elem);
+	  double * entry = (double *) calloc(2, sizeof(double));
+	  entry[0] = params[0];
+	  entry[1] = params[1];
+	  e.data = entry;
 	       
 		    
-	       ep = hsearch(e, ENTER);
-	       if (ep == NULL) 
-	       {
-		    fprintf(stderr, "entry failed in the parameter table\n");
-		    exit(1);
-	       }
+	  ep = hsearch(e, ENTER);
+	  if (ep == NULL) 
+	  {
+	       fprintf(stderr, "entry failed in the parameter table\n");
+	       exit(1);
 	  }
-     }
-     else
-     {
-	  puts("Lennard Jones parameter file not found!");
-	  exit(1);
+
+	  if (idx == total_size) break;
      }
 
      free(buffer);
-     fclose(fin);
 }
 
 void parameter_lennard_jones(const Atom *a, const Atom *b, double *param1)
@@ -138,7 +135,7 @@ double potencial_lennard_jones_param(const double *a, const double *b, double *p
 
      double p = 4*(pow((c12), 12) - pow((c6), 6));
      if (isnan(p))
-	  return 0;
+     	  return 0;
      
 
      /* printf("p = %f\n", p); */

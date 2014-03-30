@@ -26,11 +26,14 @@ Molecule *otimizar_ga(Molecule *molecula, int geracoes, int tam_populacao, int p
 	//printf(">>>>>> Cria populacao inicial\n");
 	cria_populacao_inicial(geracao_ascendente, molecula, tam_populacao,tamanho_arestas);
 
-	
+	printf("Geracao - melhor, media, pior\n");
 	for (i = 0; i < geracoes ; ++i )
 	{
-		printf(">> Geracao %d\n", i);
+		printf(">> %3d -> ", i+1);
 		geracao_descendente = cria_populacao_descendente(prob_mutacao,prob_crossover,tamanho_arestas, geracao_ascendente);
+
+		/* Free memory */
+		destroy_agregado(geracao_ascendente);
 
 
 		/* Estatisticas globais */
@@ -43,6 +46,8 @@ Molecule *otimizar_ga(Molecule *molecula, int geracoes, int tam_populacao, int p
 		}
 		media_global[i] = tmp_media/tam_populacao;
 		/************************/
+
+		printf("%9.4f %10.4f %10.4f\n", melhor_global[i], media_global[i], pior_global[i]);
 		geracao_ascendente = geracao_descendente;
 	}
 
@@ -115,7 +120,7 @@ Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agr
 
      /* Coloca o melhor na proxima geracao - Elitismo */
      geracao_descendente->agregado[0] = geracao_ascendente->agregado[0];
-//     geracao_ascendente->agregado[0] = NULL;
+     geracao_ascendente->agregado[0] = NULL;
      for (i=0; i<tam_populacao; ++i)
      {
 	     
@@ -236,8 +241,6 @@ void mutacao(Molecule *molecula, double tamanho_arestas)
 		  y = gera_coordenada_aleatoria(tamanho_arestas);
 		  z = gera_coordenada_aleatoria(tamanho_arestas);
 	     
-//		  printf("x = %f, y = %f, z = %f\n", x, y, z);
-
 		  molecula->molecule[i]->x = x;
 		  molecula->molecule[i]->y = y;
 		  molecula->molecule[i]->z = z;
@@ -247,9 +250,9 @@ void mutacao(Molecule *molecula, double tamanho_arestas)
 	else if (chance == 1)
 	{
 	     /* Agregado eh substituido completamente */
-	     /* Molecule *aleatoria = gera_molecula_aleatoria(molecula, tamanho_arestas); */
+	     Molecule *aleatoria = gera_molecula_aleatoria(molecula, tamanho_arestas);
 	     /* destroy_molecule(molecula); */
-	     /* molecula = aleatoria; */
+	     molecula = aleatoria;
 	}
 
 	else if (chance == 2)
@@ -344,7 +347,10 @@ void destroy_agregado(Agregado *a)
      int i,tamanho = a->num_molecules;
      for (i=0; i<tamanho; ++i)
      {
-	  destroy_molecule(a->agregado[i]);
+	  if (a->agregado[i])
+	  {
+	       destroy_molecule(a->agregado[i]);
+	  }
      }
      free(a->agregado);
      free(a);

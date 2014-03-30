@@ -67,6 +67,7 @@ void destroy_molecule(Molecule *molecule)
      for (i=0; i<molecule->num_atoms; ++i)
      {
 	  destroy_atom(molecule->molecule[i]);
+	  molecule->molecule[i] = NULL;
      }
      free(molecule->molecule);
      molecule->molecule = NULL;
