@@ -12,7 +12,7 @@ char *le_molecula_entrada(char *s)
      int size = 1024;
 
      int pos, c, atom_counter = 0;
-     char *buffer = (char *) malloc(size);
+     char *buffer = (char *) alloca(size);
 
 
      char *elem = alloca(10);
@@ -63,7 +63,6 @@ char *le_molecula_entrada(char *s)
 	  exit(1);
      }
 
-     free(buffer);
      fclose(fin);
      //return return_molecule;
 }
@@ -96,7 +95,6 @@ int file_size(char *s)
      FILE *fp = fopen(s, "r");
      fseek(fp, 0L, SEEK_END);
      return ftell(fp);
-
 }     
 
 

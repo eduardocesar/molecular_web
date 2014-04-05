@@ -25,20 +25,6 @@ int line_counter(char *s)
      return count;
 }
 
-void print_help()
-{
-     printf(
-	  "Command line parameters:\n"
-	  "1 - Input file\n"
-	  "2 - Output file (not implemented yet)\n"
-	  "3 - Stats file\n"
-	  "4 - Size of population\n"
-	  "5 - Generations\n"
-	  "6 - Prob crossover\n"
-	  "7 - Prob mutation\n"
-	  );
-}
-
 /**
  * @param[in, out] string to parse
  * @param[out] string with the unprocessed potentials
@@ -108,8 +94,6 @@ static void process_param_string(char *params, char **string_potential, char **s
 
 void process_string_molecule(char *string_molecula, Molecule **molecula_entrada)
 {
-
-
      char *buffer = alloca(1024);
      char *separator, *tmp_sep;
 
@@ -144,7 +128,7 @@ void process_string_molecule(char *string_molecula, Molecule **molecula_entrada)
      *molecula_entrada = return_molecule;
 }
 
-int newmain(char *params)
+void newmain(char *params)
 {
      int tam_populacao;
      int geracoes;
@@ -214,7 +198,7 @@ int newmain(char *params)
      molecula_otimizada = otimizar_ga(molecula_entrada, geracoes, tam_populacao, prob_crossover, prob_mutacao);
 
      /* FILE *stats = fopen(argv[3], "w"); */
-     int i;
+     /* int i; */
      /* fprintf(stats, "Best, Average, Worst\n"); */
      /* for (i=0; i< geracoes; ++i) */
      /* { */
@@ -222,7 +206,8 @@ int newmain(char *params)
      /* } */
      
      destroy_molecule(molecula_entrada);
-     /* destroy_molecule(molecula_teste); */
+     destroy_molecule(molecula_otimizada);
 
      hdestroy();
+     return;
 }

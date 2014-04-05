@@ -75,7 +75,7 @@ void process_string_potential(char *string_potential)
      free(buffer);
 }
 
-void parameter_lennard_jones(const Atom *a, const Atom *b, double *param1)
+static void parameter_lennard_jones(const Atom *a, const Atom *b, double *param1)
 {
 
      ENTRY e, *ep;
@@ -135,8 +135,10 @@ double potencial_lennard_jones_param(const double *a, const double *b, double *p
 
      double p = 4*(pow((c12), 12) - pow((c6), 6));
      if (isnan(p))
+     {
+	  puts("isnan");
      	  return 0;
-     
+     }
 
      /* printf("p = %f\n", p); */
      return p;
