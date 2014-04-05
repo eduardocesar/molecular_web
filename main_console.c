@@ -167,4 +167,5 @@ int main(int argc, char **argv)
 {
      char *params = build_param_string(argv);
      newmain(params);
+     free(params);
 }

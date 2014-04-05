@@ -144,7 +144,6 @@ void newmain(char *params)
 
      /* Breaks the \1 parameter string into the string fields */
      process_param_string(params, &string_potential, &string_molecula, &tam_populacao, &geracoes, &prob_crossover, &prob_mutacao);
-     free(params);
 
      /* Estimate a number for the entries in the hash table that will be
 	used for the potential comparison. */
