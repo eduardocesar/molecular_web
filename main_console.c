@@ -166,6 +166,8 @@ static char* build_param_string(char **argv)
 int main(int argc, char **argv)
 {
      char *params = build_param_string(argv);
-     newmain(params);
+     char *result = NULL;
+     newmain(params, &result);
+     if (result) free(result);
      free(params);
 }

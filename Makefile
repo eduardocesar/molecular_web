@@ -1,8 +1,8 @@
-EXE=simulador
+EXE=sim
 
-SOURCES=lennard_jones.c morse.c atomo_molecula.c ga.c main_console.c
+SOURCES=lennard_jones.c atomo_molecula.c ga.c simulador.c main_console.c
 #SOURCES=$(wildcard *.c)
-HEADERS=simulador.h atomo_molecula.h lennard_jones.h morse.h ga.h main_console.h
+HEADERS=simulador.h atomo_molecula.h lennard_jones.h morse.h ga.h
 #HEADERS=$(wildcard *.h)
 
 DEBUG=-ggdb
@@ -18,11 +18,11 @@ OBJECTS=$(SOURCES:.c=.o)
 
 all: $(OBJECTS) $(EXE)
 
-$(EXE): $(OBJECTS) $(EXE).o $(HEADERS)
-	$(CC) $(LDFLAGS) $(OBJECTS) $(EXE).o -o $@ $(LIBS)
+$(EXE): $(OBJECTS) $(HEADERS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@ $(LIBS)
 
-test: $(OBJECTS) test.o $(HEADERS)
-	$(CC) $(LDFLAGS) $(OBJECTS) test.o -o test $(LIBS)
+#test: $(OBJECTS) test.o $(HEADERS)
+#	$(CC) $(LDFLAGS) $(OBJECTS) test.o -o test $(LIBS)
 
 
 %.o: %.c $(HEADERS)

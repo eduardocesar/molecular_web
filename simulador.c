@@ -4,7 +4,6 @@
 #include <search.h>
 #include <time.h>
 
-#include "main_console.h"
 #include "simulador.h"
 #include "atomo_molecula.h"
 #include "lennard_jones.h"
@@ -24,6 +23,51 @@ int line_counter(char *s)
 
      return count;
 }
+
+static char* string_vec_double(double *vec, unsigned int size)
+{
+     char *result = NULL, *tmp = NULL;
+     int i;
+     
+     asprintf(&result, "%f", vec[0]);
+
+     for (i=1; i<size; ++i)
+     {
+	  asprintf(&tmp, "%s, %f", result, vec[i]);
+	  free(result);
+	  result = tmp;
+     }
+     return result;
+}
+
+static void molecule_string(const Molecule *mol, char **string_mol, double *energy)
+{
+     char *result = malloc(1);
+     char *tmp = NULL;
+
+     unsigned int num_atoms = mol->num_atoms;
+     double x, y, z;
+     char line[100];
+     int i;
+     
+     memset(result, '\0', 1);
+
+     *energy = mol->energy;
+
+     for (i=1; i<num_atoms; ++i)
+     {
+	  x = mol->molecule[i]->x;
+	  y = mol->molecule[i]->y;
+	  z = mol->molecule[i]->z;
+	  sprintf(line, "%s %f %f %f\n", mol->molecule[i]->element, x, y, z);
+
+	  asprintf(&tmp, "%s%s", result, line);
+	  free(result);
+	  result = tmp;
+     }
+     *string_mol = result;
+}
+
 
 /**
  * @param[in, out] string to parse
@@ -128,7 +172,9 @@ void process_string_molecule(char *string_molecula, Molecule **molecula_entrada)
      *molecula_entrada = return_molecule;
 }
 
-void newmain(char *params)
+
+
+void newmain(char *params, char **result)
 {
      int tam_populacao;
      int geracoes;
@@ -141,7 +187,6 @@ void newmain(char *params)
      Molecule *molecula_entrada = NULL;
      Molecule *molecula_otimizada = NULL;
 
-
      /* Breaks the \1 parameter string into the string fields */
      process_param_string(params, &string_potential, &string_molecula, &tam_populacao, &geracoes, &prob_crossover, &prob_mutacao);
 
@@ -151,13 +196,6 @@ void newmain(char *params)
 
      /* Init the random number gen*/
      srand((unsigned int) time(NULL));
-
-
-
-     /* printf("Tamanho da populacao: %s\n", argv[4]); */
-     /* printf("Geracoes: %s\n", argv[5]); */
-     /* printf("Prob crossover: %s\n", argv[6]); */
-     /* printf("Prob mutacao: %s\n", argv[7]); */
 
      unsigned short POTENCIAL = LJ;
 
@@ -188,8 +226,6 @@ void newmain(char *params)
      }
 
 
-     //molecula_entrada = le_molecula_entrada(argv[1]);
-
      /* Process the string characters and return a molecule */
      process_string_molecule(string_molecula, &molecula_entrada);
      free(string_molecula);
@@ -203,7 +239,21 @@ void newmain(char *params)
      /* { */
      /* 	  fprintf(stats, "%f %f %f\n", melhor_global[i], media_global[i], pior_global[i]); */
      /* } */
-     
+
+     char *melhor, *media, *pior, *molecule = NULL;
+     double energy;
+
+     melhor = string_vec_double(melhor_global, geracoes);
+     media = string_vec_double(media_global, geracoes);
+     pior = string_vec_double(pior_global, geracoes);
+     molecule_string(molecula_otimizada, &molecule, &energy);
+
+//     *result = prepare_strings(melhor, media, pior, 
+
+     free(melhor_global);
+     free(media_global);
+     free(pior_global);
+
      destroy_molecule(molecula_entrada);
      destroy_molecule(molecula_otimizada);
 
