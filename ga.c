@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "simulador.h"
 #include "atomo_molecula.h"
@@ -107,8 +108,6 @@ Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agr
 	       mutacao(ind1,tamanho_arestas);
 	       mutacao(ind2,tamanho_arestas);
 	  }
-
-
 
 	  otimizador(ind1,100);
 	  otimizador(ind2,100);
@@ -239,7 +238,32 @@ void mutacao(Molecule *molecula, double tamanho_arestas)
 
 	int chance = rand() % 3;
 
-	if (chance == 0)
+
+	switch (chance)
+	{
+	case 0:
+	{
+	     /* Troca a posicao de dois atomos */
+	     Atom *tmp_atom;
+	     int pos1 = rand()%molecula->num_atoms;
+	     int pos2 = rand()%molecula->num_atoms;
+
+	     /* Tests if they are of the same element */
+	     char *e1 = molecula->molecule[pos1]->element;
+	     char *e2 = molecula->molecule[pos2]->element;
+
+	     if (strcmp(e1, e2) == 0)
+	     {
+		  tmp_atom = molecula->molecule[pos1];
+		  molecula->molecule[pos1] = molecula->molecule[pos2];
+		  molecula->molecule[pos2] = tmp_atom;
+		  break;
+	     }
+	     /* If not of the same element, then just change the coordinates.
+		of some atoms.
+	     */
+	}
+	case 1:
 	{
 	     /* Alguns atomos tem suas coordenadas deslocadas */
 	     int max = (int) (rand() % molecula->num_atoms)-1;
@@ -255,25 +279,17 @@ void mutacao(Molecule *molecula, double tamanho_arestas)
 		  molecula->molecule[i]->z = z;
 	     }
 		  
+	     break;
 	}
-	else if (chance == 1)
+	case 2:
 	{
 	     /* Agregado eh substituido completamente */
 	     Molecule *aleatoria = gera_molecula_aleatoria(molecula, tamanho_arestas);
 	     /* destroy_molecule(molecula); */
 	     molecula = aleatoria;
+	     break;
 	}
-
-	else if (chance == 2)
-	{
-	     /* Troca a posicao de dois atomos */
-	     Atom *tmp_atom;
-	     int pos1 = rand()%molecula->num_atoms;
-	     int pos2 = rand()%molecula->num_atoms;
-	     tmp_atom = molecula->molecule[pos1];
-	     molecula->molecule[pos1] = molecula->molecule[pos2];
-	     molecula->molecule[pos2] = tmp_atom;
-	}
+	} /* end switch */
 }
 
 
