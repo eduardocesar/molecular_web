@@ -19,12 +19,8 @@ Molecule *otimizar_ga(Molecule *molecula, int geracoes, int tam_populacao, int p
 	if (tam_populacao % 2 != 0) ++tam_populacao;
 
 
-	/* Cria as posicoes em memoria para as populacoes */
-	geracao_ascendente = create_empty_agregado(tam_populacao);
-
-	     
 	//printf(">>>>>> Cria populacao inicial\n");
-	cria_populacao_inicial(geracao_ascendente, molecula, tam_populacao,tamanho_arestas);
+	geracao_ascendente = cria_populacao_inicial(molecula, tam_populacao,tamanho_arestas);
 
 	printf("Geracao - melhor, media, pior\n");
 	for (i = 0; i < geracoes ; ++i )
@@ -54,8 +50,9 @@ Molecule *otimizar_ga(Molecule *molecula, int geracoes, int tam_populacao, int p
 	return geracao_descendente->agregado[0];
 }
 
-void cria_populacao_inicial(Agregado *geracao_ascendente, Molecule *recebida, int tamanho_populacao, double tamanho_arestas)
+Agregado* cria_populacao_inicial(Molecule *recebida, int tamanho_populacao, double tamanho_arestas)
 {
+        Agregado *geracao_ascendente = create_empty_agregado(tamanho_populacao);
 	int i;
 	for (i = 0; i < tamanho_populacao; ++i)
 	{
@@ -64,6 +61,7 @@ void cria_populacao_inicial(Agregado *geracao_ascendente, Molecule *recebida, in
 	     geracao_ascendente->agregado[i] = aleatoria;
 	}
 	ordena(geracao_ascendente);
+	return geracao_ascendente;
 }
 
 
@@ -75,8 +73,8 @@ Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agr
 
      Agregado *geracao_descendente = create_empty_agregado(tam_populacao);
 
-     Molecule *ind1;
-     Molecule *ind2;
+     Molecule *ind1 = NULL;
+     Molecule *ind2 = NULL;
 
      /* TODO: Verificar de onde esta pegando os pais */
 
@@ -88,6 +86,13 @@ Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agr
 	  do
 	  {
 	       result = rank(geracao_ascendente, &ind1, &ind2); // seleciona pais
+	       if (!result)
+	       {
+		    free(ind1);
+		    ind1 = NULL;
+		    free(ind2);
+		    ind2 = NULL;
+	       }
 	  } while (!result);
      
 	  // crossover
@@ -102,7 +107,7 @@ Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agr
 	       mutacao(ind1,tamanho_arestas);
 	       mutacao(ind2,tamanho_arestas);
 	  }
-	
+
 
 
 	  otimizador(ind1,100);
@@ -116,6 +121,10 @@ Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agr
 	  
 	  geracao_descendente->agregado[i  ] = ind1;
 	  geracao_descendente->agregado[i+1] = ind2;
+
+	  ind1 = NULL;
+	  ind2 = NULL;
+
      }
 
      /* Coloca o melhor na proxima geracao - Elitismo */
@@ -123,10 +132,7 @@ Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agr
      geracao_ascendente->agregado[0] = NULL;
      for (i=0; i<tam_populacao; ++i)
      {
-	     
-	  Molecule *avaliada = geracao_descendente->agregado[i];
-	  calcula_energia_molecula(avaliada);
-
+	  calcula_energia_molecula(geracao_descendente->agregado[i]);
      }
      ordena(geracao_descendente);
      /* TODO: Destruir geracao ascendente aqui ou fora da funcao.*/
@@ -167,8 +173,11 @@ Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agr
 
 double gera_coordenada_aleatoria(double tamanho_aresta)
 {
+	//double retorno = (double) tamanho_aresta*((double) rand()/ (double) RAND_MAX);
 	double precisao = 10000000;
-	return (rand()%(int)(tamanho_aresta*precisao))/precisao;
+	double retorno = (rand()%(int)(tamanho_aresta*precisao))/precisao;
+
+	return retorno;
 }
 
 
@@ -307,10 +316,14 @@ int rank(Agregado *original, Molecule **ind1t, Molecule **ind2t)
      int tamanho = original->num_molecules;
      int i;
 
+     *ind1t = copy_molecule(original->agregado[0]);
+     *ind2t = copy_molecule(original->agregado[1]);
+     return 1;
+
      int counter = 0;
      for (i=0; i<tamanho; ++i)
      {
-	  double prob = (double) rand()/RAND_MAX;
+	  double prob = (double) rand()/(double) RAND_MAX;
 	  double chance = (double) (tamanho - i)/(tamanho*2);
 	  if (chance < prob)
 	  {
@@ -350,8 +363,11 @@ void destroy_agregado(Agregado *a)
 	  if (a->agregado[i])
 	  {
 	       destroy_molecule(a->agregado[i]);
+	       a->agregado[i] = NULL;
 	  }
      }
      free(a->agregado);
+     a->agregado = NULL;
      free(a);
+     a = NULL;
 }

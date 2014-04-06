@@ -13,7 +13,7 @@ Molecule *otimizar_ga(Molecule *molecula, int geracoes, int tam_populacao, int p
 
 Molecule *gera_molecula_aleatoria(Molecule *recebida, double tamanho_arestas);
 
-void cria_populacao_inicial(Agregado *geracao_ascendente, Molecule *recebida, int tamanho_populacao, double tamanho_arestas);
+Agregado* cria_populacao_inicial( Molecule *recebida, int tamanho_populacao, double tamanho_arestas);
 
 Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanhoArestas, Agregado *geracao_ascendente);
 
