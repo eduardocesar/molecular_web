@@ -23,7 +23,8 @@ Molecule *create_empty_molecule(int num_atomos)
 
 Molecule *copy_molecule(Molecule *orig)
 {
-     int i, x, y, z;
+     int i;
+     double x, y, z;
      char *elem;
      Atom *tmp_atom;
      Molecule *retorno = calloc(1,sizeof(Molecule));
@@ -66,8 +67,11 @@ void destroy_molecule(Molecule *molecule)
      int i;
      for (i=0; i<molecule->num_atoms; ++i)
      {
-	  destroy_atom(molecule->molecule[i]);
-	  molecule->molecule[i] = NULL;
+	  if (molecule->molecule[i])
+	  {
+	       destroy_atom(molecule->molecule[i]);
+	       molecule->molecule[i] = NULL;
+	  }
      }
      free(molecule->molecule);
      molecule->molecule = NULL;
