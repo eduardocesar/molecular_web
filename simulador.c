@@ -54,7 +54,7 @@ static void molecule_string(const Molecule *mol, char **string_mol, double *ener
 
      *energy = mol->energy;
 
-     for (i=1; i<num_atoms; ++i)
+     for (i=0; i<num_atoms; ++i)
      {
 	  x = mol->molecule[i]->x;
 	  y = mol->molecule[i]->y;
@@ -247,6 +247,8 @@ void newmain(char *params, char **result)
      media = string_vec_double(media_global, geracoes);
      pior = string_vec_double(pior_global, geracoes);
      molecule_string(molecula_otimizada, &molecule, &energy);
+     
+     printf("%s", molecule);
 
 //     *result = prepare_strings(melhor, media, pior, 
 
