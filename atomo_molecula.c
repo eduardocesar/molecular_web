@@ -33,8 +33,8 @@ Molecule *copy_molecule(Molecule *orig)
 
      if (!orig->molecule)
      {
-	  puts("Invalid Molecule");
-	  exit(1);
+     	  /* puts("Invalid Molecule"); */
+     	  exit(1);
      }
 
      for (i=0; i<orig->num_atoms; ++i)
