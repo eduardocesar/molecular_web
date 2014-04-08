@@ -5,7 +5,7 @@ SOURCES=lennard_jones.c atomo_molecula.c ga.c simulador.c main_console.c
 HEADERS=simulador.h atomo_molecula.h lennard_jones.h morse.h ga.h
 #HEADERS=$(wildcard *.h)
 
-DEBUG=-ggdb
+DEBUG=-ggdb -Wall
 CC=gcc
 
 LDFLAGS=$(DEBUG)
