@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright (c) 2012 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<head>
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="-1">
+  <title>Molecular Simulator</title>
+
+  <script language="javascript" type="text/javascript" src="jquery.js"></script>
+  <script language="javascript" type="text/javascript" src="jquery.flot.js"></script>
+  <script type="text/javascript" src="common.js"></script>
+  <script type="text/javascript" src="example.js"></script>
+
+  <style type="text/css"> 
+    input{
+    text-align:left;
+    }
+  </style>
+
+</head>
+<body data-custom-load="true" data-name="sim_nacl" data-tools="newlib glibc pnacl" data-configs="Debug Release" data-path="{tc}/{config}" data-attrs="ps_stdout=dev/tty">
+  <h1>Molecular Simulator</h1>
+  <h2>Status: <code id="statusField">NO-STATUS</code></h2>
+  <p>
+    This program calculates an atomic cluster.
+  </p>
+  <p><b>Files:</b></p>
+  <div class="parameters" align="left">
+    <span>
+
+      <table>
+	<tr>
+	  <td align="left">      Atomic Cluster file:</td>
+	  <td align="right">      <input type="file" id="atomic_cluster"> </td>
+	</tr>
+	<tr>
+	  <td align="left">      Potentials file:</td>
+	  <td align="right">      <input type="file" id="potentials"> </td>
+	</tr>
+      </table>
+    </span>
+  </div>
+
+  <p><b>Parameters:</b></p>
+  <div class="container" align="left">
+    <form>
+      <table>
+	<tr>
+	  <td align="left">     Generations:</td>
+	  <td align="right"><input size="5" type="text" id="generations" align="right" /><td />
+	</tr>
+	<tr>
+	  <td align="left">     Population size:</td>
+	<td align="right"><input size="5" type="text" id="size_population"><br /></td>
+	</tr>
+	<tr>
+	<td align="left">	Crossover probability:</td>
+	<td align="right">	<input size="5" type="text" id="crossover_prob"><br /></td>
+	</tr>
+	<tr>
+	<td align="left">	Mutation Probability:</td>
+	<td align="right">	<input size="5" type="text" id="mutation_prob"><br /></td>
+	</tr>
+      </table>
+    </form>
+    <button id="start">Start</button>
+  </div>
+
+  <!-- <hr> -->
+
+  <pre id="output_pre"></pre>
+
+  <p id="choices" style=" width:135px;"></p>
+
+  <h2>Calculation: <code id="calculations">NONE</code></h2>
+
+  <p><b>Log:</b></p>
+  <pre id="log" style="font-weight: bold"></pre>
+  <!-- The NaCl plugin will be embedded inside the element with id "listener".
+      See common.js.-->
+
+  <div id="listener"></div>
+
+</body>
+</html>
