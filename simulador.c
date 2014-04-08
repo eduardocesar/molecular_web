@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -78,7 +80,7 @@ static void molecule_string(const Molecule *mol, char **string_mol, double *ener
  * @param[out] crossover probability
  * @param[out] mutation probability
  */
-static void process_param_string(char *params, char **string_potential, char **string_molecula, int *tam_populacao, int *geracoes, int *prob_crossover, int *prob_mutacao)
+static void process_param_string(char *params, char **string_potential, char **string_molecula, int *geracoes, int *tam_populacao, int *prob_crossover, int *prob_mutacao)
 {
      char *separator, *tmp_sep;
 
@@ -107,7 +109,7 @@ static void process_param_string(char *params, char **string_potential, char **s
      *separator = '\0';
 
      /* Gets the population size */
-     *tam_populacao = atoi(tmp_sep);
+     *geracoes = atoi(tmp_sep);
 
      /* Generations number string */
      tmp_sep = separator+1;
@@ -115,7 +117,7 @@ static void process_param_string(char *params, char **string_potential, char **s
      *separator = '\0';
 
      /* Gets the generations */
-     *geracoes = atoi(tmp_sep);
+     *tam_populacao = atoi(tmp_sep);
 
      /* Crossover prob number string */
      tmp_sep = separator+1;
@@ -174,10 +176,11 @@ void process_string_molecule(char *string_molecula, Molecule **molecula_entrada)
 
 
 
-void newmain(char *params, char **result)
+void newmain(char *params, char **result, double *energy)
 {
-     int tam_populacao;
      int geracoes;
+     int tam_populacao;
+
      int prob_crossover;
      int prob_mutacao;
 
@@ -188,7 +191,7 @@ void newmain(char *params, char **result)
      Molecule *molecula_otimizada = NULL;
 
      /* Breaks the \1 parameter string into the string fields */
-     process_param_string(params, &string_potential, &string_molecula, &tam_populacao, &geracoes, &prob_crossover, &prob_mutacao);
+     process_param_string(params, &string_potential, &string_molecula, &geracoes, &tam_populacao, &prob_crossover, &prob_mutacao);
 
      /* Estimate a number for the entries in the hash table that will be
 	used for the potential comparison. */
@@ -241,16 +244,18 @@ void newmain(char *params, char **result)
      /* } */
 
      char *melhor, *media, *pior, *molecule = NULL;
-     double energy;
 
      melhor = string_vec_double(melhor_global, geracoes);
      media = string_vec_double(media_global, geracoes);
      pior = string_vec_double(pior_global, geracoes);
-     molecule_string(molecula_otimizada, &molecule, &energy);
+     molecule_string(molecula_otimizada, &molecule, energy);
      
-     printf("%s", molecule);
+     asprintf(result, "%s\001%s\001%s\001%s", molecule, melhor, media, pior);
 
-//     *result = prepare_strings(melhor, media, pior, 
+     free(molecule);
+     free(melhor);
+     free(media);
+     free(pior);
 
      free(melhor_global);
      free(media_global);

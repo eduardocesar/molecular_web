@@ -53,28 +53,30 @@ Molecule *copy_molecule(Molecule *orig)
 
 void destroy_atom(Atom *atom)
 {
-     if (atom->element)
+     if (atom && atom->element)
      {
 	  free(atom->element);
 	  atom->element = NULL;
+	  free(atom);
+	  atom = NULL;
      }
-     free(atom);
-     atom = NULL;
 }
 
 void destroy_molecule(Molecule *molecule)
 {
      int i;
-     for (i=0; i<molecule->num_atoms; ++i)
+     if (molecule)
      {
-	  if (molecule->molecule[i])
+	  for (i=0; i<molecule->num_atoms; ++i)
 	  {
-	       destroy_atom(molecule->molecule[i]);
-	       molecule->molecule[i] = NULL;
+	       if (molecule->molecule[i]) /* Atom */
+	       {
+		    destroy_atom(molecule->molecule[i]);
+	       }
 	  }
+	  free(molecule->molecule);
+	  molecule->molecule = NULL;
+	  free(molecule);
+	  molecule = NULL;
      }
-     free(molecule->molecule);
-     molecule->molecule = NULL;
-     free(molecule);
-     molecule = NULL;
 }

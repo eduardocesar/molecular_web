@@ -79,7 +79,7 @@ static void parameter_lennard_jones(const Atom *a, const Atom *b, double *param1
 {
 
      ENTRY e, *ep;
-     double param;
+     //double param;
 
      char *potential = alloca(10);
 
@@ -127,7 +127,7 @@ double potencial_lennard_jones_param(const double *a, const double *b, double *p
 
      double distancia = sqrt((x*x) + (y*y) + (z*z));
 
-     double c6, c12, e0;
+     double c6, c12;//, e0;
 
      c12 = (double) param[0] / distancia;
 //     printf("c12 = %f\n", c12);

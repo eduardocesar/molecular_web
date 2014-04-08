@@ -13,7 +13,7 @@ Molecule *otimizar_ga(Molecule *molecula, int geracoes, int tam_populacao, int p
 	double tamanho_arestas = 40; // tamanho máximo das arestas
 	int i, j;
 
-	Agregado *geracao_ascendente, *geracao_descendente;
+	Agregado *geracao_ascendente = NULL, *geracao_descendente = NULL;
 
 
 	/* If we have an odd populations, make it even. */
@@ -47,8 +47,11 @@ Molecule *otimizar_ga(Molecule *molecula, int geracoes, int tam_populacao, int p
 		printf("%9.4f %10.4f %10.4f\n", melhor_global[i], media_global[i], pior_global[i]);
 		geracao_ascendente = geracao_descendente;
 	}
-
-	return geracao_descendente->agregado[0];
+	
+	Molecule *retorno = geracao_descendente->agregado[0];
+	geracao_descendente->agregado[0] = NULL;
+	destroy_agregado(geracao_descendente);
+	return retorno;
 }
 
 Agregado* cria_populacao_inicial(Molecule *recebida, int tamanho_populacao, double tamanho_arestas)
@@ -64,8 +67,6 @@ Agregado* cria_populacao_inicial(Molecule *recebida, int tamanho_populacao, doub
 	ordena(geracao_ascendente);
 	return geracao_ascendente;
 }
-
-
 
 Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agregado *geracao_ascendente)
 {
@@ -107,15 +108,26 @@ Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agr
 	  {
 	       mutacao(ind1,tamanho_arestas);
 	       mutacao(ind2,tamanho_arestas);
+
+	       /* /\* Muda completamente o agregado *\/ */
+	       /* if ((rand() % 100) == 0) */
+	       /* { */
+
+	       /* 	    Agregado *geracao_temp = cria_populacao_inicial(geracao_ascendente->agregado[0], geracao_ascendente->num_molecules, tamanho_arestas); */
+	       /* 	    destroy_agregado(geracao_descendente); */
+	       /* 	    geracao_descendente = geracao_temp; */
+	       /* 	    goto mandinga; */
+	       /* } */
+	       
 	  }
 
 	  otimizador(ind1,100);
 	  otimizador(ind2,100);
 	  
-	  double fit = calcula_energia_molecula(ind1);
-	  ind1->energy = fit;
-	  fit = calcula_energia_molecula(ind2);
-	  ind2->energy = fit;
+	  calcula_energia_molecula(ind1);
+	  /* ind1->energy = fit; */
+	  calcula_energia_molecula(ind2);
+	  /* ind2->energy = fit; */
 	  
 	  
 	  geracao_descendente->agregado[i  ] = ind1;
@@ -125,10 +137,10 @@ Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agr
 	  ind2 = NULL;
 
      }
-
+//mandinga:
      /* Coloca o melhor na proxima geracao - Elitismo */
-     geracao_descendente->agregado[0] = geracao_ascendente->agregado[0];
-     geracao_ascendente->agregado[0] = NULL;
+     destroy_molecule(geracao_descendente->agregado[0]);
+     geracao_descendente->agregado[0] = copy_molecule(geracao_ascendente->agregado[0]);
      for (i=0; i<tam_populacao; ++i)
      {
 	  calcula_energia_molecula(geracao_descendente->agregado[i]);
@@ -281,14 +293,13 @@ void mutacao(Molecule *molecula, double tamanho_arestas)
 		  
 	     break;
 	}
-	case 2:
-	{
-	     /* Agregado eh substituido completamente */
-	     Molecule *aleatoria = gera_molecula_aleatoria(molecula, tamanho_arestas);
-	     /* destroy_molecule(molecula); */
-	     molecula = aleatoria;
-	     break;
-	}
+	/* case 2: */
+	/* { */
+	/*      /\* Molecula eh substituida completamente *\/ */
+	/*      Molecule *aleatoria = gera_molecula_aleatoria(molecula, tamanho_arestas); */
+	/*      molecula = aleatoria; */
+	/*      break; */
+	/* } */
 	} /* end switch */
 }
 
@@ -331,10 +342,6 @@ int rank(Agregado *original, Molecule **ind1t, Molecule **ind2t)
 {
      int tamanho = original->num_molecules;
      int i;
-
-     *ind1t = copy_molecule(original->agregado[0]);
-     *ind2t = copy_molecule(original->agregado[1]);
-     return 1;
 
      int counter = 0;
      for (i=0; i<tamanho; ++i)

@@ -26,6 +26,6 @@ double *melhor_global, *pior_global, *media_global;
 
 int line_counter(char *s);
 
-void newmain(char *params, char **result);
+void newmain(char *params, char **result, double *energy);
 
 #endif	/* SIMULADOR_H */

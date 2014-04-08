@@ -4,68 +4,68 @@
 
 #include "simulador.h"
 
-/* Reads the input file and returns the Molecule structure with the
- * contents */
+/* /\* Reads the input file and returns the Molecule structure with the */
+/*  * contents *\/ */
 
-char *le_molecula_entrada(char *s)
-{
-     int size = 1024;
+/* static Molecule *le_molecula_entrada(char *s) */
+/* { */
+/*      int size = 1024; */
 
-     int pos, c, atom_counter = 0;
-     char *buffer = (char *) alloca(size);
+/*      int pos, c, atom_counter = 0; */
+/*      char *buffer = (char *) alloca(size); */
 
 
-     char *elem = alloca(10);
-     double x, y, z;
+/*      char *elem = alloca(10); */
+/*      double x, y, z; */
 
-     int qtos_atomos = line_counter(s);
+/*      int qtos_atomos = line_counter(s); */
 
-     Molecule *return_molecule = calloc(1, sizeof(Molecule));
+/*      Molecule *return_molecule = calloc(1, sizeof(Molecule)); */
 
-     return_molecule->molecule = (Atom **) calloc(qtos_atomos, sizeof(Atom **));
-     return_molecule->num_atoms = qtos_atomos;
+/*      return_molecule->molecule = (Atom **) calloc(qtos_atomos, sizeof(Atom **)); */
+/*      return_molecule->num_atoms = qtos_atomos; */
 
-     FILE *fin = fopen(s, "r");
+/*      FILE *fin = fopen(s, "r"); */
 
-     if (fin)
-     {
-	  while (1)  /* read all lines in file */
-	  {
-	       pos = 0;
-	       do /* read one line */
-	       {
-		    c = fgetc(fin);
+/*      if (fin) */
+/*      { */
+/* 	  while (1)  /\* read all lines in file *\/ */
+/* 	  { */
+/* 	       pos = 0; */
+/* 	       do /\* read one line *\/ */
+/* 	       { */
+/* 		    c = fgetc(fin); */
 			 
-		    if (c != EOF) buffer[pos++] = (char) c;
-		    if(pos >= size - 1) { // increase buffer length - leave room for 0
-			 size *= 2;
-			 buffer = (char*) realloc(buffer, size);
-		    }
+/* 		    if (c != EOF) buffer[pos++] = (char) c; */
+/* 		    if(pos >= size - 1) { // increase buffer length - leave room for 0 */
+/* 			 size *= 2; */
+/* 			 buffer = (char*) realloc(buffer, size); */
+/* 		    } */
 		    
-	       } while(c != '\n' && c != EOF);
+/* 	       } while(c != '\n' && c != EOF); */
 
-	       if (c == EOF) break;
-	       buffer[pos] = 0;	/* End of line */
-	       //printf("%s", buffer);
+/* 	       if (c == EOF) break; */
+/* 	       buffer[pos] = 0;	/\* End of line *\/ */
+/* 	       //printf("%s", buffer); */
 
-	       /* Constructs one atom and stores it in the molecule */
-	       sscanf(buffer, "%s %lf %lf %lf", elem, &x, &y, &z);
+/* 	       /\* Constructs one atom and stores it in the molecule *\/ */
+/* 	       sscanf(buffer, "%s %lf %lf %lf", elem, &x, &y, &z); */
 
-	       return_molecule->molecule[atom_counter] = create_atom(elem, x, y, z);
-	       ++atom_counter;
+/* 	       return_molecule->molecule[atom_counter] = create_atom(elem, x, y, z); */
+/* 	       ++atom_counter; */
 	       
-	  }
+/* 	  } */
 
-     }
-     else
-     {
-	  puts("Input file not found!");
-	  exit(1);
-     }
+/*      } */
+/*      else */
+/*      { */
+/* 	  puts("Input file not found!"); */
+/* 	  exit(1); */
+/*      } */
 
-     fclose(fin);
-     //return return_molecule;
-}
+/*      fclose(fin); */
+/*      return return_molecule; */
+/* } */
 
 
 int file_line_counter(char *s)
@@ -94,7 +94,9 @@ int file_size(char *s)
 {
      FILE *fp = fopen(s, "r");
      fseek(fp, 0L, SEEK_END);
-     return ftell(fp);
+     long pos = ftell(fp);
+     fclose(fp);
+     return pos;
 }     
 
 
@@ -110,6 +112,7 @@ int file_size(char *s)
 static char* build_param_string(char **argv)
 {
      /* begin Refazer de modo mais eficiente */
+     FILE *fp;
      char buf[2048];
      int sz1, sz2, sz3, sz4, sz5, sz6;
 
@@ -125,9 +128,9 @@ static char* build_param_string(char **argv)
      char *buffer = malloc(sz1+sz2+sz3+sz4+sz5+sz6+10);
 
      /* Le o arquivo no buffer */
-     FILE *fp = fopen(argv[1], "r");
+     fp = fopen(argv[1], "r");
      fread(buf, sizeof(char), sz1, fp);
-     //fclose(fp);
+     fclose(fp);
 
      /* Copia o buffer no outro buffer */
      memcpy(buffer, buf, sz1);
@@ -137,7 +140,7 @@ static char* build_param_string(char **argv)
      /* Le o arquivo no buffer */
      fp = fopen(argv[2], "r");
      fread(buf, sizeof(char), sz2, fp);
-     //fclose(fp);
+     fclose(fp);
 
      /* Copia o buffer no outro buffer */
      memcpy(buffer+sz1+1, buf, sz2);
@@ -167,7 +170,10 @@ int main(int argc, char **argv)
 {
      char *params = build_param_string(argv);
      char *result = NULL;
-     newmain(params, &result);
+     double energy;
+     newmain(params, &result, &energy);
+     //printf("%s", result);
      if (result) free(result);
      free(params);
+     return 0;
 }
