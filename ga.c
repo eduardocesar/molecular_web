@@ -10,7 +10,7 @@ Molecule *otimizar_ga(Molecule *molecula, int geracoes, int tam_populacao, int p
 {
 	/* parametros do GA */
 
-	double tamanho_arestas = 40; // tamanho máximo das arestas
+	double tamanho_arestas = 20; // tamanho máximo das arestas
 	int i, j;
 
 	Agregado *geracao_ascendente = NULL, *geracao_descendente = NULL;

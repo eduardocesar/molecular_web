@@ -26,6 +26,7 @@ int line_counter(char *s)
      return count;
 }
 
+/* Takes a vector os doubles and transform in a string */
 static char* string_vec_double(double *vec, unsigned int size)
 {
      char *result = NULL, *tmp = NULL;
@@ -42,6 +43,7 @@ static char* string_vec_double(double *vec, unsigned int size)
      return result;
 }
 
+/* Transforms a molecule in a string */
 static void molecule_string(const Molecule *mol, char **string_mol, double *energy)
 {
      char *result = malloc(1);
@@ -234,14 +236,6 @@ void newmain(char *params, char **result, double *energy)
      free(string_molecula);
      
      molecula_otimizada = otimizar_ga(molecula_entrada, geracoes, tam_populacao, prob_crossover, prob_mutacao);
-
-     /* FILE *stats = fopen(argv[3], "w"); */
-     /* int i; */
-     /* fprintf(stats, "Best, Average, Worst\n"); */
-     /* for (i=0; i< geracoes; ++i) */
-     /* { */
-     /* 	  fprintf(stats, "%f %f %f\n", melhor_global[i], media_global[i], pior_global[i]); */
-     /* } */
 
      char *melhor, *media, *pior, *molecule = NULL;
 
