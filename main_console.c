@@ -35,7 +35,6 @@ int file_size(char *s)
      return pos;
 }     
 
-
 /** 
  * Reads the necessary files and the command line options and constructs
  * the parameter string to be passed to the newmain function. 
@@ -107,8 +106,9 @@ int main(int argc, char **argv)
      char *params = build_param_string(argv);
      char *result = NULL;
      double energy;
+
      newmain(params, &result, &energy);
-     //printf("%s", result);
+
      if (result) free(result);
      free(params);
      return 0;

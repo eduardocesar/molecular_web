@@ -192,7 +192,8 @@ function initGraph()
     graph_div.style.top="50px";
     graph_div.style.rigth="10px";
     graph_div.style.left="25%";
-    graph_div.style.width="60%";
+    //graph_div.style.float="right";
+    graph_div.style.width="70%";
     graph_div.style.height="80%";
     document.body.appendChild(graph_div);
 

@@ -150,38 +150,6 @@ Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agr
      return geracao_descendente;
 }
 
-
-
-
-
-
-/* int getIndiceMelhorFitness() */
-/* { */
-/* 	int i; */
-/* 	int melhor = 0; */
-/* 	double fitnessMedia = geracaoAscendente[0].getFitness(); */
-/* 	for(i = 1; i<(int)geracaoAscendente.size(); i++) { */
-/* 		fitnessMedia += geracaoAscendente[i].getFitness(); */
-/* 		if ( geracaoAscendente[i].getFitness() < geracaoAscendente[melhor].getFitness()) { */
-/* 			melhor = i; */
-/* 		} */
-/* 	} */
-/* 	fitnessMedia /= geracaoAscendente.size(); */
-
-
-/* 	return melhor; */
-/* } */
-
-
-
-/* Molecula getMelhorMolecula() */
-/* { */
-/* 	int melhor = getIndiceMelhorFitness(); */
-/* 	return geracaoAscendente[melhor]; */
-/* } */
-
-
-
 double gera_coordenada_aleatoria(double tamanho_aresta)
 {
 	//double retorno = (double) tamanho_aresta*((double) rand()/ (double) RAND_MAX);

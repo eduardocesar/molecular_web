@@ -140,7 +140,7 @@ static void process_param_string(char *params, char **string_potential, char **s
 }
 
 
-void process_string_molecule(char *string_molecula, Molecule **molecula_entrada)
+static void process_string_molecule(char *string_molecula, Molecule **molecula_entrada)
 {
      char *buffer = alloca(1024);
      char *separator, *tmp_sep;
