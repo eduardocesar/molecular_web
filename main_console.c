@@ -101,15 +101,46 @@ static char* build_param_string(char **argv)
      return buffer;
 }
 
+/* TODO: Refazer */
+static void process_result_string(char *params,  char **string_molecula)
+{
+     char *separator;
+
+     /* Finds the first chunk with the potential text */
+     separator = strchr(params, 1);
+
+     /* End of string */
+     *separator = '\0';
+
+     /* tmp_sep = separator+1; */
+
+     /* Copy the molecule string */
+     *string_molecula = strdup(params);
+
+
+}
+
+
 int main(int argc, char **argv)
 {
      char *params = build_param_string(argv);
      char *result = NULL;
      double energy;
 
+     char *string_molecula = NULL;
+
      newmain(params, &result, &energy);
+     
+     if (argc == 8)
+     {
+	  process_result_string(result, &string_molecula);
+	  FILE *fout = fopen(argv[7], "w");
+	  fprintf(fout, "%s", string_molecula);
+	  fclose(fout);
+     }
 
      if (result) free(result);
+
      free(params);
      return 0;
 }

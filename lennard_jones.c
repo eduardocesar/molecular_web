@@ -3,6 +3,7 @@
 #include <search.h>
 #include <string.h>
 #include <math.h>
+#include <limits.h>
 
 /* #include <gsl/gsl_multimin.h> */
 
@@ -123,7 +124,7 @@ double potencial_lennard_jones_param(const double *a, const double *b, double *p
      double z = (a[2] - b[2]);
 
      if (x == 0 && y == 0 && z == 0)
-	  return 0;
+	  return 1000;
 
      double distancia = sqrt((x*x) + (y*y) + (z*z));
 
