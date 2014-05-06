@@ -49,7 +49,7 @@ static char* build_param_string(char **argv)
      /* begin Refazer de modo mais eficiente */
      FILE *fp;
      char buf[2048];
-     int sz1, sz2, sz3, sz4, sz5, sz6;
+     int sz1, sz2, sz3, sz4, sz5, sz6, sz7;
 
 
      sz1 = file_size(argv[1]);
@@ -58,9 +58,10 @@ static char* build_param_string(char **argv)
      sz3 = strlen(argv[3]);
      sz4 = strlen(argv[4]);
      sz5 = strlen(argv[5]);
-     sz6 = strlen(argv[5]);
+     sz6 = strlen(argv[6]);
+     sz7 = strlen(argv[7]);
 
-     char *buffer = malloc(sz1+sz2+sz3+sz4+sz5+sz6+10);
+     char *buffer = malloc(sz1+sz2+sz3+sz4+sz5+sz6+sz7+10);
 
      /* Le o arquivo no buffer */
      fp = fopen(argv[1], "r");
@@ -97,6 +98,10 @@ static char* build_param_string(char **argv)
      memcpy(buffer+sz1+sz2+sz3+sz4+sz5+5, argv[6], sz6);
      buffer[sz1+sz2+sz3+sz4+sz5+sz6+5] = '\1';
 
+     /* Copia o buffer no outro buffer */
+     memcpy(buffer+sz1+sz2+sz3+sz4+sz5+sz6+6, argv[7], sz7);
+     buffer[sz1+sz2+sz3+sz4+sz5+sz6+sz7+6] = '\1';
+
      /* end Refazer de modo mais eficiente */     
      return buffer;
 }
@@ -130,11 +135,13 @@ int main(int argc, char **argv)
      char *string_molecula = NULL;
 
      newmain(params, &result, &energy);
-     
-     if (argc == 8)
+
+     printf("%f\n", energy);
+
+     if (argc >= 9)
      {
 	  process_result_string(result, &string_molecula);
-	  FILE *fout = fopen(argv[7], "w");
+	  FILE *fout = fopen(argv[8], "w");
 	  fprintf(fout, "%s", string_molecula);
 	  fclose(fout);
      }

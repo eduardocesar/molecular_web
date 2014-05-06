@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include "simulador.h"
 #include "atomo_molecula.h"
@@ -10,7 +11,8 @@ Molecule *otimizar_ga(Molecule *molecula, int geracoes, int tam_populacao, int p
 {
 	/* parametros do GA */
 
-	double tamanho_arestas = 20; // tamanho máximo das arestas
+	double tamanho_arestas = log(molecula->num_atoms); // tamanho máximo das arestas
+	printf("Tamanho das arestas: %f\n", tamanho_arestas);
 	int i, j;
 
 	Agregado *geracao_ascendente = NULL, *geracao_descendente = NULL;
@@ -116,13 +118,13 @@ Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agr
 	       /* 	    Agregado *geracao_temp = cria_populacao_inicial(geracao_ascendente->agregado[0], geracao_ascendente->num_molecules, tamanho_arestas); */
 	       /* 	    destroy_agregado(geracao_descendente); */
 	       /* 	    geracao_descendente = geracao_temp; */
-	       /* 	    goto mandinga; */
+	       /* 	    goto mudou; */
 	       /* } */
 	       
 	  }
 
-	  otimizador(ind1,100);
-	  otimizador(ind2,100);
+	  otimizador(ind1, ITERACOES);
+	  otimizador(ind2, ITERACOES);
 	  
 	  calcula_energia_molecula(ind1);
 	  /* ind1->energy = fit; */
@@ -137,7 +139,7 @@ Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanho_arestas, Agr
 	  ind2 = NULL;
 
      }
-//mandinga:
+/* mudou: */
      /* Coloca o melhor na proxima geracao - Elitismo */
      destroy_molecule(geracao_descendente->agregado[0]);
      geracao_descendente->agregado[0] = copy_molecule(geracao_ascendente->agregado[0]);
@@ -216,7 +218,7 @@ void mutacao(Molecule *molecula, double tamanho_arestas)
 	int i;
 	double x, y, z;
 
-	int chance = rand() % 3;
+	int chance = rand() % 2;
 
 
 	switch (chance)
@@ -240,7 +242,7 @@ void mutacao(Molecule *molecula, double tamanho_arestas)
 		  break;
 	     }
 	     /* If not of the same element, then just change the coordinates.
-		of some atoms.
+		of some atoms, in case 1.
 	     */
 	}
 	case 1:

@@ -10,7 +10,7 @@ CC=gcc
 
 LDFLAGS=$(DEBUG)
 CFLAGS=$(DEBUG) -c
-#LIBS += -lm -lgsl -lblas
+LIBS += -lm -lgsl -lgslcblas
 LIBS += -lm
 OBJECTS=$(SOURCES:.c=.o)
 

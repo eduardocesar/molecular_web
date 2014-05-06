@@ -41,6 +41,11 @@ found in the LICENSE file.
 	  <td align="left">      Potentials file:</td>
 	  <td align="right">      <input type="file" id="potentials"> </td>
 	</tr>
+	<tr>
+	  <td align="left">      Calculate energy:</td>
+	  <td align="left">      <button id="energy">Energy</button>  </td>
+	</tr>
+
       </table>
     </span>
   </div>
@@ -55,16 +60,27 @@ found in the LICENSE file.
 	</tr>
 	<tr>
 	  <td align="left">     Population size:</td>
-	<td align="right"><input size="5" type="text" id="size_population"><br /></td>
+	  <td align="right"><input size="5" type="text" id="size_population"><br /></td>
 	</tr>
 	<tr>
-	<td align="left">	Crossover probability:</td>
-	<td align="right">	<input size="5" type="text" id="crossover_prob"><br /></td>
+	  <td align="left">	Crossover probability:</td>
+	  <td align="right">	<input size="5" type="text" id="crossover_prob"><br /></td>
 	</tr>
 	<tr>
-	<td align="left">	Mutation Probability:</td>
-	<td align="right">	<input size="5" type="text" id="mutation_prob"><br /></td>
+	  <td align="left">	Mutation Probability:</td>
+	  <td align="right">	<input size="5" type="text" id="mutation_prob"><br /></td>
 	</tr>
+	<tr>
+	  <td align="left">Type of optimization</td>
+	  <td align="left">
+
+	    <input type="radio" name="oti_type" id="oti_global" value="global" checked>  Global<br />
+	    <input type="radio" name="oti_type" id="oti_local" value="local">  Local<br />
+
+
+	  </td>
+	</tr>
+
       </table>
     </form>
     <button id="start">Start</button>

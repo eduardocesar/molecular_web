@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 function moduleDidLoad() {
-  common.hideModule();
+    common.hideModule();
 }
 
 // Called by the common.js module.
@@ -27,33 +27,11 @@ function setDefaultValues(gn, sz, cr, mt)
     document.getElementById("mutation_prob").value = mt;
 }
 
-function getTextFromFile(element)
-{
-    var output;
-    var fr = new FileReader();
-    fr.onload = function (e) {
-        output = e.target.result;
-    }
-    var text = element.files[0];
-    fr.readAsText(text);
-}
-
-function process()
-{
-    var msg =  potentials_text + '\001' + cluster_text + '\001' +
-	document.getElementById("generations").value + '\001' +
-	document.getElementById("size_population").value + '\001' +
-	document.getElementById("crossover_prob").value + '\001' +
-	document.getElementById("mutation_prob").value + '\001'
-    //alert(msg);
-    updateCalc("PERFORMING");
-    nacl_module.postMessage(msg);
-
-}
 
 // // Called by the common.js module.
 function attachListeners() {
     document.getElementById("start").addEventListener('click', process);
+    document.getElementById("energy").addEventListener('click', calc_energy);
 
     document.getElementById("atomic_cluster").onchange = function (e) 
     { 
@@ -78,7 +56,54 @@ function attachListeners() {
 	var text = element.files[0];
 	fr.readAsText(text);
     }
+}
+function getTextFromFile(element)
+{
+    var output;
+    var fr = new FileReader();
+    fr.onload = function (e) {
+        output = e.target.result;
+    }
+    var text = element.files[0];
+    fr.readAsText(text);
+}
 
+function process()
+{
+    var msg =  potentials_text + '\001' + cluster_text + '\001' +
+	document.getElementById("generations").value + '\001' +
+	document.getElementById("size_population").value + '\001' +
+	document.getElementById("crossover_prob").value + '\001' +
+	document.getElementById("mutation_prob").value + '\001'
+
+    if (document.getElementById("oti_global").checked)
+    {
+    	msg = msg + "0\001"
+	console.log('global');
+    }
+    else
+    {
+    	msg = msg + "1\001"	
+	console.log('local');
+    }
+
+
+    updateCalc("PERFORMING");
+    nacl_module.postMessage(msg);
+
+}
+
+function calc_energy()
+{
+    var msg =  potentials_text + '\001' + cluster_text + '\001' +
+	document.getElementById("generations").value + '\001' +
+	document.getElementById("size_population").value + '\001' +
+	document.getElementById("crossover_prob").value + '\001' +
+	document.getElementById("mutation_prob").value + '\001' +
+	'2\001'
+
+    nacl_module.postMessage(msg);
+}
 
 //   var radioEls = document.querySelectorAll('input[type="radio"]');
 //   for (var i = 0; i < radioEls.length; ++i) {
@@ -108,7 +133,6 @@ function attachListeners() {
 //     else
 //       functionEls[i].setAttribute('hidden', '');
 //   }
-}
 
 // function addNameToSelectElements(cssClass, handle, name) {
 //   var text = '[' + handle + '] ' + name;
@@ -153,6 +177,7 @@ function handleMessage(message_event) {
     if (startsWith(msg, "results:"))
     {
 	var params = msg.substring(9).split('\001');
+	
 	plotData(params[1], params[2], params[3]);
 	//TODO: Aqui estao os parametros 
 	
@@ -228,6 +253,11 @@ function initGraph()
 
 function plotData(b, m, w)
 {
+
+    if (b == undefined || b == "null") 
+    {
+	return;
+    }
     var melhor = b.split(',');
     var media = m.split(',');
     var pior = w.split(',');

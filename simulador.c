@@ -44,7 +44,7 @@ static char* string_vec_double(double *vec, unsigned int size)
 }
 
 /* Transforms a molecule in a string */
-static void molecule_string(const Molecule *mol, char **string_mol, double *energy)
+static void molecule_string(const Molecule *mol, char **string_mol)
 {
      char *result = malloc(1);
      char *tmp = NULL;
@@ -55,8 +55,6 @@ static void molecule_string(const Molecule *mol, char **string_mol, double *ener
      int i;
      
      memset(result, '\0', 1);
-
-     *energy = mol->energy;
 
      for (i=0; i<num_atoms; ++i)
      {
@@ -82,7 +80,7 @@ static void molecule_string(const Molecule *mol, char **string_mol, double *ener
  * @param[out] crossover probability
  * @param[out] mutation probability
  */
-static void process_param_string(char *params, char **string_potential, char **string_molecula, int *geracoes, int *tam_populacao, int *prob_crossover, int *prob_mutacao)
+static void process_param_string(char *params, char **string_potential, char **string_molecula, int *geracoes, int *tam_populacao, int *prob_crossover, int *prob_mutacao, unsigned char *mode)
 {
      char *separator, *tmp_sep;
 
@@ -137,6 +135,14 @@ static void process_param_string(char *params, char **string_potential, char **s
      /* Mutation probability */
      *prob_mutacao = atoi(tmp_sep);
 
+
+     /* Mode number string */
+     tmp_sep = separator+1;
+     separator = strchr(tmp_sep, 1);
+     *separator = '\0';
+
+     /* Mode */
+     *mode = atoi(tmp_sep);
 }
 
 
@@ -186,14 +192,18 @@ void newmain(char *params, char **result, double *energy)
      int prob_crossover;
      int prob_mutacao;
 
+     unsigned char mode = 0;
+
      char *string_potential = NULL;
      char *string_molecula = NULL;
+
+     char *molecule = NULL;
 
      Molecule *molecula_entrada = NULL;
      Molecule *molecula_otimizada = NULL;
 
      /* Breaks the \1 parameter string into the string fields */
-     process_param_string(params, &string_potential, &string_molecula, &geracoes, &tam_populacao, &prob_crossover, &prob_mutacao);
+     process_param_string(params, &string_potential, &string_molecula, &geracoes, &tam_populacao, &prob_crossover, &prob_mutacao, &mode);
 
      /* Estimate a number for the entries in the hash table that will be
 	used for the potential comparison. */
@@ -234,29 +244,60 @@ void newmain(char *params, char **result, double *energy)
      /* Process the string characters and return a molecule */
      process_string_molecule(string_molecula, &molecula_entrada);
      free(string_molecula);
+
+     switch (mode)
+     {
+     case 0:
+	  molecula_otimizada = otimizar_ga(molecula_entrada, geracoes, tam_populacao, prob_crossover, prob_mutacao);
+	  char *melhor = NULL, 
+	       *media = NULL,
+	       *pior = NULL;
+
+	  melhor = string_vec_double(melhor_global, geracoes);
+	  media = string_vec_double(media_global, geracoes);
+	  pior = string_vec_double(pior_global, geracoes);
+
+	  molecule_string(molecula_otimizada, &molecule);
      
-     molecula_otimizada = otimizar_ga(molecula_entrada, geracoes, tam_populacao, prob_crossover, prob_mutacao);
+	  asprintf(result, "%s\001%s\001%s\001%s", molecule, melhor, media, pior);
 
-     char *melhor, *media, *pior, *molecule = NULL;
+	  free(molecule);
+	  free(melhor);
+	  free(media);
+	  free(pior);
 
-     melhor = string_vec_double(melhor_global, geracoes);
-     media = string_vec_double(media_global, geracoes);
-     pior = string_vec_double(pior_global, geracoes);
-     molecule_string(molecula_otimizada, &molecule, energy);
-     
-     asprintf(result, "%s\001%s\001%s\001%s", molecule, melhor, media, pior);
+	  break;
+     case 1:
 
-     free(molecule);
-     free(melhor);
-     free(media);
-     free(pior);
+	  otimizador(molecula_entrada, ITERACOES);
+
+	  *energy = calcula_energia(molecula_entrada);
+
+	  molecula_entrada->energy = *energy;
+
+
+
+	  molecule_string(molecula_entrada, &molecule);
+
+	  asprintf(result, "%s\001null\001null\001null", molecule);
+
+	  free(molecule);
+	  
+	  break;
+     case 2:
+	  *energy = calcula_energia(molecula_entrada);
+	  molecula_entrada->energy = *energy;
+	  molecule_string(molecula_entrada, &molecule);
+
+	  break;
+     }
 
      free(melhor_global);
      free(media_global);
      free(pior_global);
 
-     destroy_molecule(molecula_entrada);
-     destroy_molecule(molecula_otimizada);
+     if (molecula_entrada) destroy_molecule(molecula_entrada);
+     if (molecula_otimizada) destroy_molecule(molecula_otimizada);
 
      hdestroy();
      return;

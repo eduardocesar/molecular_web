@@ -13,8 +13,8 @@ include $(NACL_SDK_ROOT)/tools/common.mk
 CHROME_ARGS += --allow-nacl-socket-api=localhost
 
 TARGET = sim_nacl
-DEPS =
-LIBS = $(DEPS) ppapi pthread
+DEPS = 
+LIBS = $(DEPS) ppapi pthread m gsl gslcblas
 
 CFLAGS = -ggdb3 -Wall -I ..
 SOURCES = main_nacl.c \

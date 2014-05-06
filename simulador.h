@@ -5,7 +5,7 @@
 #include "atomo_molecula.h"
 
 #define PRECISAO 10
-
+#define ITERACOES 100
 
 enum {MORSE = 1, LJ, GUPTA};
 
