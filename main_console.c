@@ -136,8 +136,6 @@ int main(int argc, char **argv)
 
      newmain(params, &result, &energy);
 
-     printf("%f\n", energy);
-
      if (argc >= 9)
      {
 	  process_result_string(result, &string_molecula);

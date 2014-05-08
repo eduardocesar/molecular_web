@@ -3,7 +3,7 @@
 #include <search.h>
 #include <string.h>
 #include <math.h>
-#include <limits.h>
+#include <values.h>
 
 #include <gsl/gsl_multimin.h>
 
@@ -138,7 +138,7 @@ double potencial_lennard_jones_param(const double *a, const double *b, double *p
      if (isnan(p))
      {
 	  //puts("isnan");
-     	  return 1000;
+     	  return MAXFLOAT;
      }
 
      /* printf("p = %f\n", p); */
@@ -245,14 +245,22 @@ void my_df_lennard_jones (const gsl_vector *v, void *params, gsl_vector *df)
 
 	       double dist =  pow( x1-x2,2) + pow( y1-y2,2) + pow( z1-z2, 2) ;
 	       // NOVA POSICAO DO ATOMO A
-	       x1_n = ((6 * (x1 - x2) * (-2*C1 + C2*(pow(dist,3))))) / (pow( dist ,7));
-	       y1_n = ((6 * (y1 - y2) * (-2*C1 + C2*(pow(dist,3))))) / (pow( dist ,7));
-	       z1_n = ((6 * (z1 - z2) * (-2*C1 + C2*(pow(dist,3))))) / (pow( dist ,7));
+	       double c1 = (6 * (-2*C1 + C2*(pow(dist,3)))) / (pow( dist ,7));
+	       //x1_n = ((x1 - x2) * 6 * (-2*C1 + C2*(pow(dist,3)))) / (pow( dist ,7));
+	       x1_n = (x1 - x2) * c1;
+	       //y1_n = ((y1 - y2) * 6 * (-2*C1 + C2*(pow(dist,3)))) / (pow( dist ,7));
+	       y1_n = (y1 - y2) * c1;
+	       //z1_n = ((z1 - z2) * 6 * (-2*C1 + C2*(pow(dist,3)))) / (pow( dist ,7));
+	       z1_n = (z1 - z2) * c1;
 
 	       // NOVA POSICAO DO ATOMO B
-	       x2_n = (6 * (x1 - x2) * ( (2 * C1)- C2 * pow(dist,3))) / (pow(dist,7));
-	       y2_n = (6 * (y1 - y2) * ( (2 * C1)- C2 * pow(dist,3))) / (pow(dist,7));
-	       z2_n = (6 * (z1 - z2) * ( (2 * C1)- C2 * pow(dist,3))) / (pow(dist,7));
+	       double c2 = (6 * ( (2 * C1)- C2 * pow(dist,3))) / (pow(dist,7));
+	       //x2_n = ((x1 - x2) * 6 * ( (2 * C1)- C2 * pow(dist,3))) / (pow(dist,7));
+	       x2_n = (x1 - x2) * c2;
+	       //y2_n = ((y1 - y2) * 6 * ( (2 * C1)- C2 * pow(dist,3))) / (pow(dist,7));
+	       y2_n = (y1 - y2) * c2;
+	       //z2_n = ((z1 - z2) * 6 * ( (2 * C1)- C2 * pow(dist,3))) / (pow(dist,7));
+	       z2_n = (z1 - z2) * c2;
 
 	       // NOVA POSICAO DO ATOMO A
 	       df_n[(i*3)]   += x1_n;
