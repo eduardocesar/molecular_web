@@ -298,7 +298,7 @@ void my_fdf_lennard_jones (const gsl_vector *x, void *params,double *f, gsl_vect
 void executa_gradiente_lennard_jones(Molecule *molecula, double *param_vector, int num_iteracoes)
 //void OtimizadorLocalLennardJones::executa_gradiente(std::vector<Atomo> *molecula,std::vector<double> *param_vector,int num_iteracoes) {
 {
-     int i, j;
+     int i;
 
      gsl_multimin_function_fdf my_func;
      my_func.n = molecula->num_atoms*3;

@@ -17,9 +17,9 @@ Agregado* cria_populacao_inicial(Molecule *recebida, int tamanho_populacao, doub
 
 Agregado *cria_populacao_descendente(int Pm, int Pc, double tamanhoArestas, Agregado *geracao_ascendente);
 
-void crossover(Molecule *ind1, Molecule *ind2);
+void crossover(Molecule *ind1, Molecule *ind2, int prob_crossover);
 
-void mutacao(Molecule *molecula, double tamanho_arestas);
+void mutacao(Molecule *molecula, int prob_mutacao, double tamanho_arestas);
 
 void ordena(Agregado *original);
 
