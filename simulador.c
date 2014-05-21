@@ -43,10 +43,10 @@ static char* string_vec_double(double *vec, unsigned int size)
      return result;
 }
 
-/* Transforms a molecule in a string */
+/* Transforms a struct molecule in a string */
 static void molecule_string(const Molecule *mol, char **string_mol)
 {
-     char *result = malloc(1);
+     char *result = malloc(50);
      char *tmp = NULL;
 
      unsigned int num_atoms = mol->num_atoms;
@@ -54,7 +54,8 @@ static void molecule_string(const Molecule *mol, char **string_mol)
      char line[100];
      int i;
      
-     memset(result, '\0', 1);
+     //memset(result, '\0', 1);
+     sprintf(result, "%1$d\nA structure with %1$d atoms.\n", num_atoms);
 
      for (i=0; i<num_atoms; ++i)
      {
@@ -155,7 +156,7 @@ static void process_string_molecule(char *string_molecula, Molecule **molecula_e
      char *elem = alloca(10);
      double x, y, z;
 
-     int i, idx;
+     int i, idx, counter = -1;
 
      int qtos_atomos = line_counter(string_molecula);
 
@@ -163,20 +164,23 @@ static void process_string_molecule(char *string_molecula, Molecule **molecula_e
 
      return_molecule = calloc(1, sizeof(Molecule));
 
-     return_molecule->molecule = (Atom **) calloc(qtos_atomos, sizeof(Atom **));
-     return_molecule->num_atoms = qtos_atomos;
+     return_molecule->molecule = (Atom **) calloc(qtos_atomos-2, sizeof(Atom **));
+     return_molecule->num_atoms = qtos_atomos-2;
      
      tmp_sep = string_molecula;
 
      for (i = 0; i < qtos_atomos; ++i)
      {
+	  ++counter;
 	  separator = strchr(tmp_sep, '\n');
 	  idx = separator - tmp_sep;
-	  memcpy(buffer, tmp_sep, idx);
-	  memset(buffer+idx, 0, 1);
-	  sscanf(buffer, "%s %lf %lf %lf", elem, &x, &y, &z);
-	  return_molecule->molecule[atom_counter++] = create_atom(elem, x, y, z);
-	  
+	  if (counter >= 2)  /* Skips the 2 first lines */
+	  {
+	       memcpy(buffer, tmp_sep, idx);
+	       memset(buffer+idx, 0, 1);
+	       sscanf(buffer, "%s %lf %lf %lf", elem, &x, &y, &z);
+	       return_molecule->molecule[atom_counter++] = create_atom(elem, x, y, z);
+	  }
 	  tmp_sep += idx+1;
      }
      *molecula_entrada = return_molecule;
