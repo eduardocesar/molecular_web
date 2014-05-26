@@ -8,10 +8,16 @@ found in the LICENSE file.
 <head>
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="-1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, target-densitydpi=device-dpi">
+
   <title>Molecular Simulator</title>
 
   <script language="javascript" type="text/javascript" src="jquery.js"></script>
-  <script language="javascript" type="text/javascript" src="jquery.flot.js"></script>
+  <!-- <script language="javascript" type="text/javascript" src="jquery.flot.js"></script> -->
+  <script type="text/javascript" src="Three49custom.js"></script>
+  <script type="text/javascript" src="GLmol.js"></script>
+
+
   <script type="text/javascript" src="common.js"></script>
   <script type="text/javascript" src="example.js"></script>
 
@@ -23,28 +29,34 @@ found in the LICENSE file.
 
 </head>
 <body data-custom-load="true" data-name="sim_nacl" data-tools="newlib glibc pnacl" data-configs="Debug Release" data-path="{tc}/{config}" data-attrs="ps_stdout=dev/tty">
+
+<div id="glmol02" style="position:absolute; right: 5px; width: 50%; height: 80%; background-color: black;"></div> 
+
+
   <h1>Molecular Simulator</h1>
   <h2>Status: <code id="statusField">NO-STATUS</code></h2>
   <p>
     This program calculates an atomic cluster.
   </p>
+
+
   <p><b>Files:</b></p>
   <div class="parameters" align="left">
     <span>
 
       <table>
-	<tr>
-	  <td align="left">      Atomic Cluster file:</td>
-	  <td align="right">      <input type="file" id="atomic_cluster"> </td>
-	</tr>
-	<tr>
-	  <td align="left">      Potentials file:</td>
-	  <td align="right">      <input type="file" id="potentials"> </td>
-	</tr>
-	<tr>
-	  <td align="left">      Calculate energy:</td>
-	  <td align="left">      <button id="energy">Energy</button>  </td>
-	</tr>
+  	<tr>
+  	  <td align="left">      Atomic Cluster file:</td>
+  	  <td align="right">      <input type="file" id="atomic_cluster"> </td>
+  	</tr>
+  	<tr>
+  	  <td align="left">      Potentials file:</td>
+  	  <td align="right">      <input type="file" id="potentials"> </td>
+  	</tr>
+  	<tr>
+  	  <td align="left">      Calculate energy:</td>
+  	  <td align="left">      <button id="energy">Energy</button>  </td>
+  	</tr>
 
       </table>
     </span>
@@ -54,38 +66,46 @@ found in the LICENSE file.
   <div class="container" align="left">
     <form>
       <table>
-	<tr>
-	  <td align="left">     Generations:</td>
-	  <td align="right"><input size="5" type="text" id="generations" align="right" /><td />
-	</tr>
-	<tr>
-	  <td align="left">     Population size:</td>
-	  <td align="right"><input size="5" type="text" id="size_population"><br /></td>
-	</tr>
-	<tr>
-	  <td align="left">	Crossover probability:</td>
-	  <td align="right">	<input size="5" type="text" id="crossover_prob"><br /></td>
-	</tr>
-	<tr>
-	  <td align="left">	Mutation Probability:</td>
-	  <td align="right">	<input size="5" type="text" id="mutation_prob"><br /></td>
-	</tr>
-	<tr>
-	  <td align="left">Type of optimization</td>
-	  <td align="left">
+  	<tr>
+  	  <td align="left">     Generations:</td>
+  	  <td align="right"><input size="5" type="text" id="generations" align="right" /><td />
+  	</tr>
+  	<tr>
+  	  <td align="left">     Population size:</td>
+  	  <td align="right"><input size="5" type="text" id="size_population"><br /></td>
+  	</tr>
+  	<tr>
+  	  <td align="left">	Crossover probability:</td>
+  	  <td align="right">	<input size="5" type="text" id="crossover_prob"><br /></td>
+  	</tr>
+  	<tr>
+  	  <td align="left">	Mutation Probability:</td>
+  	  <td align="right">	<input size="5" type="text" id="mutation_prob"><br /></td>
+  	</tr>
+  	<tr>
+  	  <td align="left">Type of optimization</td>
+  	  <td align="left">
 
-	    <input type="radio" name="oti_type" id="oti_global" value="global" checked>  Global<br />
-	    <input type="radio" name="oti_type" id="oti_local" value="local">  Local<br />
+  	    <input type="radio" name="oti_type" id="oti_global" value="global" checked>  Global<br />
+  	    <input type="radio" name="oti_type" id="oti_local" value="local">  Local<br />
 
 
-	  </td>
-	</tr>
+  	  </td>
+  	</tr>
 
       </table>
     </form>
     <button id="start">Start</button>
   </div>
 
+<div id="glmol_output">
+</div>
+
+<script type="text/javascript">
+
+
+</script>
+<hr style="clear: both;">
   <!-- <hr> -->
 
   <pre id="output_pre"></pre>
@@ -100,6 +120,7 @@ found in the LICENSE file.
       See common.js.-->
 
   <div id="listener"></div>
+
 
 </body>
 </html>

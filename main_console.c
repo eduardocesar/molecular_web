@@ -135,6 +135,7 @@ int main(int argc, char **argv)
      char *string_molecula = NULL;
 
      newmain(params, &result, &energy);
+     printf("Energia = %f\n", energy);
 
      if (argc >= 9)
      {

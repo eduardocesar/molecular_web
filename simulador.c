@@ -55,7 +55,7 @@ static void molecule_string(const Molecule *mol, char **string_mol)
      int i;
      
      //memset(result, '\0', 1);
-     sprintf(result, "%1$d\nA structure with %1$d atoms.\n", num_atoms);
+     sprintf(result, "%d\nA structure with %d atoms.\n", num_atoms, num_atoms);
 
      for (i=0; i<num_atoms; ++i)
      {
@@ -262,10 +262,11 @@ void newmain(char *params, char **result, double *energy)
 	  pior = string_vec_double(pior_global, geracoes);
 
 	  molecule_string(molecula_otimizada, &molecule);
+
+	  *energy = calcula_energia(molecula_otimizada);
      
 	  asprintf(result, "%s\001%s\001%s\001%s", molecule, melhor, media, pior);
 
-	  free(molecule);
 	  free(melhor);
 	  free(media);
 	  free(pior);
@@ -285,17 +286,19 @@ void newmain(char *params, char **result, double *energy)
 
 	  asprintf(result, "%s\001null\001null\001null", molecule);
 
-	  free(molecule);
+
 	  
 	  break;
      case 2:
 	  *energy = calcula_energia(molecula_entrada);
 	  molecula_entrada->energy = *energy;
 	  molecule_string(molecula_entrada, &molecule);
+	  asprintf(result, "%s\001null\001null\001null", molecule);
 
 	  break;
      }
 
+     free(molecule);
      free(melhor_global);
      free(media_global);
      free(pior_global);

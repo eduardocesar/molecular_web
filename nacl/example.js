@@ -11,12 +11,13 @@ function domContentLoaded(name, tc, config, width, height) {
     cluster_text = "";
     potentials_text = "";
     event = 'teste';
+    glmol02x = "";
     common.attachDefaultListeners();
     common.createNaClModule(name, tc, config, width, height);
 
     setDefaultValues(10, 50, 80, 60);
-    initGraph();
-    // 
+    Gl_init();
+    //initGraph();
 }
 
 function setDefaultValues(gn, sz, cr, mt)
@@ -33,6 +34,10 @@ function attachListeners() {
     document.getElementById("start").addEventListener('click', process);
     document.getElementById("energy").addEventListener('click', calc_energy);
 
+    document.getElementById("atomic_cluster").onclick = function (e) 
+    {
+	this.value = null;
+    }
     document.getElementById("atomic_cluster").onchange = function (e) 
     { 
 	element = e.srcElement;
@@ -40,6 +45,8 @@ function attachListeners() {
 	var fr = new FileReader();
 	fr.onload = function (f) {
             cluster_text = f.target.result;
+	    Gl_source(cluster_text);
+	    glmol02x.loadMolecule();
 	}
 	var text = element.files[0];
 	fr.readAsText(text);
@@ -105,56 +112,6 @@ function calc_energy()
     nacl_module.postMessage(msg);
 }
 
-//   var radioEls = document.querySelectorAll('input[type="radio"]');
-//   for (var i = 0; i < radioEls.length; ++i) {
-//     radioEls[i].addEventListener('click', onRadioClicked);
-//   }
-
-//   // Wire up the 'click' event for each function's button.
-//   var functionEls = document.querySelectorAll('.function');
-//   for (var i = 0; i < functionEls.length; ++i) {
-//     var functionEl = functionEls[i];
-//     var id = functionEl.getAttribute('id');
-//     var buttonEl = functionEl.querySelector('button');
-
-//     // The function name matches the element id.
-//     var func = window[id];
-//     buttonEl.addEventListener('click', func);
-//   }
-// }
-
-// function onRadioClicked(e) {
-//   var divId = this.id.slice(5);  // skip "radio"
-//   var functionEls = document.querySelectorAll('.function');
-//   for (var i = 0; i < functionEls.length; ++i) {
-//     var visible = functionEls[i].id === divId;
-//     if (functionEls[i].id === divId)
-//       functionEls[i].removeAttribute('hidden');
-//     else
-//       functionEls[i].setAttribute('hidden', '');
-//   }
-
-// function addNameToSelectElements(cssClass, handle, name) {
-//   var text = '[' + handle + '] ' + name;
-//   var selectEls = document.querySelectorAll(cssClass);
-//   for (var i = 0; i < selectEls.length; ++i) {
-//     var optionEl = document.createElement('option');
-//     optionEl.setAttribute('value', handle);
-//     optionEl.appendChild(document.createTextNode(text));
-//     selectEls[i].appendChild(optionEl);
-//   }
-// }
-
-// function removeNameFromSelectElements(cssClass, handle) {
-//   var optionEls = document.querySelectorAll(cssClass + ' > option');
-//   for (var i = 0; i < optionEls.length; ++i) {
-//     var optionEl = optionEls[i];
-//     if (optionEl.value == handle) {
-//       var selectEl = optionEl.parentNode;
-//       selectEl.removeChild(optionEl);
-//     }
-//   }
-// }
 
 
 /**
@@ -176,35 +133,62 @@ function handleMessage(message_event) {
 
     if (startsWith(msg, "results:"))
     {
-	var params = msg.substring(9).split('\001');
+	params = msg.substring(9).split('\001');
+	Gl_source(params[0]);
+	glmol02x.loadMolecule();
 	
-	plotData(params[1], params[2], params[3]);
+	//plotData(params[1], params[2], params[3]);
 	//TODO: Aqui estao os parametros 
-	
+	updateCalc("DONE");	
     }
     else
     {
 	common.logMessage(msg);
     }
-  // if (startsWith(msg, 'Error:')) {
-  //   common.logMessage(msg);
-  // } else {
-  //   // Result from a function call.
-  //   var params = msg.split('\1');
-  //   var funcName = params[0];
-  //   var funcResultName = funcName + 'Result';
-  //   var resultFunc = window[funcResultName];
-
-  //   if (!resultFunc) {
-  //     common.logMessage('Error: Bad message ' + funcName +
-  //                       ' received from NaCl module.');
-  //     return;
-  //   }
-
-  //   resultFunc.apply(null, params.slice(1));
-  // }
 }
 
+function Gl_source(text_src)
+{
+    var text = document.createTextNode(text_src);
+
+    e = document.getElementById("glmol02_src");
+
+    if (e) e.remove();
+
+    var gl_text = document.createElement("textarea");
+    gl_text.id="glmol02_src";
+    gl_text.style.display = 'none';
+    gl_text.appendChild(text);
+
+    document.body.appendChild(gl_text);
+    
+
+}
+
+function Gl_init()
+{
+
+    glmol02x = new GLmol('glmol02', true);
+
+    glmol02x.defineRepresentation = function() {
+	var all = this.getAllAtoms();
+	var hetatm = this.removeSolvents(this.getHetatms(all));
+	this.colorByAtom(all, {});
+	this.colorByChain(all);
+
+	this.drawAtomsAsSphere(this.modelGroup, hetatm, this.sphereRadius, false, 0.2); 
+	this.drawMainchainCurve(this.modelGroup, all, this.curveWidth, 'P');
+	this.drawCartoon(this.modelGroup, all, this.curveWidth);
+    };
+
+}
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////
 function initGraph()
 {
     output=document.getElementById("output_pre");
@@ -291,7 +275,7 @@ function plotData(b, m, w)
 	    data:dataset3, label:"Worst", color:"#FF0000"
 	},
     }
-    updateCalc("DONE");
+
     plotAccordingToChoices();
 }
 
