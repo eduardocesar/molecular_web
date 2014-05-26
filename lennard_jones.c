@@ -3,13 +3,16 @@
 #include <search.h>
 #include <string.h>
 #include <math.h>
-#include <values.h>
 
 #include <gsl/gsl_multimin.h>
 
 #include "lennard_jones.h"
 #include "atomo_molecula.h"
 #include "simulador.h"
+
+#ifndef MAXFLOAT
+#define MAXFLOAT 3.40282347e+38F
+#endif
 
 void process_string_potential(char *string_potential)
 /* TODO: Optimize the function */
