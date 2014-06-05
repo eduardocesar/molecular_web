@@ -299,9 +299,9 @@ void newmain(char *params, char **result, double *energy)
      }
 
      free(molecule);
-     free(melhor_global);
-     free(media_global);
-     free(pior_global);
+     /* free(melhor_global); */
+     /* free(media_global); */
+     /* free(pior_global); */
 
      if (molecula_entrada) destroy_molecule(molecula_entrada);
      if (molecula_otimizada) destroy_molecule(molecula_otimizada);

@@ -130,6 +130,10 @@ int main(int argc, char **argv)
 {
      char *params = build_param_string(argv);
      char *result = NULL;
+
+     int i, geracoes = atoi(argv[3]);
+
+
      double energy;
 
      char *string_molecula = NULL;
@@ -143,9 +147,25 @@ int main(int argc, char **argv)
 	  FILE *fout = fopen(argv[8], "w");
 	  fprintf(fout, "%s", string_molecula);
 	  fclose(fout);
+
+	  if (argc >= 10)
+	  {
+	       FILE *stats = fopen(argv[9], "w");
+	       fprintf(stats, "melhor, media, pior\n");
+	       for (i=0; i<geracoes; ++i)
+	       {
+		    fprintf(stats, "%f %f %f\n", melhor_global[i], media_global[i], pior_global[i]);
+	       }
+	       fclose(stats);
+	  }
      }
 
+
      if (result) free(result);
+
+     free(melhor_global);
+     free(media_global);
+     free(pior_global);
 
      free(params);
      return 0;
