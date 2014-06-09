@@ -17,7 +17,7 @@ function domContentLoaded(name, tc, config, width, height) {
 
     setDefaultValues(10, 50, 80, 60);
     Gl_init();
-    //initGraph();
+    initGraph();
 }
 
 function setDefaultValues(gn, sz, cr, mt)
@@ -142,9 +142,9 @@ function handleMessage(message_event) {
     {
 	params = msg.substring(9).split('\001');
 	Gl_source(params[0]);
-	glmol02x.loadMolecule();
+	//glmol02x.loadMolecule();
 	
-	//plotData(params[1], params[2], params[3]);
+	plotData(params[1], params[2], params[3]);
 	//TODO: Aqui estao os parametros 
 	updateCalc("DONE");	
 	var b = document.getElementById("save");
@@ -213,12 +213,12 @@ function initGraph()
     graph_div.id="graph_div";
     graph_div.style.position="absolute";
     // graph_div.style.top=document.body.getBoundingClientRect().top.toString();
-    graph_div.style.top="50px";
+    graph_div.style.top="600px";
     graph_div.style.rigth="10px";
     graph_div.style.left="25%";
     //graph_div.style.float="right";
     graph_div.style.width="70%";
-    graph_div.style.height="80%";
+    graph_div.style.height="300px";
     document.body.appendChild(graph_div);
 
     choiceContainer = $("#choices");
