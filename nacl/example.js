@@ -33,6 +33,9 @@ function setDefaultValues(gn, sz, cr, mt)
 function attachListeners() {
     document.getElementById("start").addEventListener('click', process);
     document.getElementById("energy").addEventListener('click', calc_energy);
+    var b = document.getElementById("save");
+    b.addEventListener('click', export_file);
+    b.disabled = true;
 
     document.getElementById("atomic_cluster").onclick = function (e) 
     {
@@ -92,11 +95,15 @@ function process()
     {
     	msg = msg + "1\001"	
 	console.log('local');
+	var b = document.getElementById("save");
+	b.disabled = false;
+
     }
 
 
     updateCalc("PERFORMING");
     nacl_module.postMessage(msg);
+
 
 }
 
@@ -140,6 +147,9 @@ function handleMessage(message_event) {
 	//plotData(params[1], params[2], params[3]);
 	//TODO: Aqui estao os parametros 
 	updateCalc("DONE");	
+	var b = document.getElementById("save");
+	b.disabled = false;
+
     }
     else
     {
@@ -183,6 +193,11 @@ function Gl_init()
 
 }
 
+
+function export_file(data)
+{
+    window.open('data:text/plain;charset=utf-8,' + escape(params[0]));
+}
 
 
 
